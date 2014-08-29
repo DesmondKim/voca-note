@@ -48,7 +48,7 @@ class VocabularyUploadHandler(webapp2.RequestHandler):
             voca_note.put()
 
         # insert vocabulary
-        for word in raw_voca_list.readlines():
+        for word in raw_voca_list.encode('utf-8').split('\n'):
 
             # assumed each word separated by *
             eng_kor_str = word.split('*')
@@ -58,6 +58,8 @@ class VocabularyUploadHandler(webapp2.RequestHandler):
             voca.kor = eng_kor_str[1]
             voca.again = False
             voca.put()
+
+        self.redirect('/')
 
 application = webapp2.WSGIApplication([
     ('/', MainHandler),
