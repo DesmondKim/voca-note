@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+<head>
+</head>
+<body>
+	<form action="/upload" method="post">
+	<div>
+		<p>Note name</p>
+		<p><input type="text" name="note_name" /></p>
+	</div>
+
+	<div>
+	  <p>Vocabulary List</p>
+	  <textarea name="voca_list" rows="40" cols="60"></textarea>
+	</div>
+
+	<div>
+		<input type="submit" value="Upload" />
+	</div>
+
+	</form>
+</body>
+</html>
+{% endautoescape %}
