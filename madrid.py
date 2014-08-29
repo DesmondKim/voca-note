@@ -4,6 +4,8 @@
 '''
 
 import os
+import urllib
+import hashlib
 
 from google.appengine.ext import ndb
 
@@ -17,6 +19,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 class VocabularyNote(ndb.Model):
     name = ndb.StringProperty()
+    link = ndb.StringProperty()
 
 class Vocabulary(ndb.Model):
     eng = ndb.StringProperty()
@@ -25,8 +28,14 @@ class Vocabulary(ndb.Model):
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.headers['Content-Type'] = 'text/plain'
-        self.response.write('Hello')
+
+        note_list = VocabularyNote.query()
+        page_value = {
+                'note_list': note_list
+        }
+
+        page = JINJA_ENVIRONMENT.get_template('pages/main.html')
+        self.response.out.write(page.render(page_value))
 
 class VocabularyUploadHandler(webapp2.RequestHandler):
 
@@ -41,11 +50,16 @@ class VocabularyUploadHandler(webapp2.RequestHandler):
 
         note_list = VocabularyNote.query(VocabularyNote.name==note_name).fetch()
 
+        note_link = None
+
         # create Vocabulary Note if VocabularyNote named note_name
         if 0 >= len(note_list):
             voca_note = VocabularyNote()
             voca_note.name = note_name
+            voca_note.link = hashlib.sha512(u' '.join([note_name, ' ']).encode('utf-8')).hexdigest()[0:16]
             voca_note.put()
+
+            note_link = voca_note.link
 
         # insert vocabulary
         for word in raw_voca_list.encode('utf-8').split('\n'):
@@ -53,11 +67,12 @@ class VocabularyUploadHandler(webapp2.RequestHandler):
             # assumed each word separated by *
             eng_kor_str = word.split('*')
 
-            voca = Vocabulary(parent=ndb.Key(VocabularyNote, note_name))
-            voca.eng = eng_kor_str[0]
-            voca.kor = eng_kor_str[1]
-            voca.again = False
-            voca.put()
+            if note_link and 1 < len(eng_kor_str):
+                voca = Vocabulary(parent=ndb.Key(VocabularyNote, note_link))
+                voca.eng = eng_kor_str[0]
+                voca.kor = eng_kor_str[1]
+                voca.again = False
+                voca.put()
 
         self.redirect('/')
 

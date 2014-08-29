@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+<head>
+</head>
+<body>
+<h1>Voca note</h1>
+<div>English first</div>
+<div>Korean first</div>
+<div>shuffle</div>
+<div>
+	{% for i in note_list %}
+	<a href="/note/{{i.link}}">{{i.name}}</a>
+	{% endfor %}
+</body>
+</html>
+{% endautoescape %}
