@@ -2,10 +2,91 @@
 {% autoescape true %}
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<style type="text/css" rel="stylesheet">
+.arrow {
+	width: 0;
+	height: 0;
+	border-top: 160px solid transparent;
+	border-bottom: 160px solid transparent;
+}
+
+#left {
+	border-right: 60px solid green;
+	float: left;
+}
+
+#right {
+	border-left: 60px solid green;
+	float: right;
+}
+
+#voca {
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	font-size: 1000%;
+}
+</style>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+
+var LANGUAGE_LIST = ['eng', 'kor'];
+
+{% autoescape false %}
+var VOCABULARY_LIST = {{voca_list}};
+{% endautoescape %}
+
+var FIRST_LANGUAGE = LANGUAGE_LIST[0];
+var CURRENT_INDEX = 0;
+var SIZE = VOCABULARY_LIST.length;
+
+var DISPLAY_VOCABULARY = function(is_toggle) {
+	var lang = FIRST_LANGUAGE;
+	if(is_toggle)
+		lang = LANGUAGE_LIST[1];
+	$('#voca').text(VOCABULARY_LIST[CURRENT_INDEX][lang]);
+};
+
+$(document).ready(function() {
+	$('#left').click(function() {
+		--CURRENT_INDEX;
+
+		if(0 > CURRENT_INDEX)
+			CURRENT_INDEX = 0;
+
+		DISPLAY_VOCABULARY();
+	});
+
+	$('#right').click(function() {
+
+		++CURRENT_INDEX;
+
+		if(SIZE <= CURRENT_INDEX)
+			CURRENT_INDEX = 0;
+
+		DISPLAY_VOCABULARY();
+
+	});
+
+	$('#voca').click(function() {
+		DISPLAY_VOCABULARY(true);
+	});
+
+	DISPLAY_VOCABULARY();
+
+});
+</script>
 </head>
 <body>
+<div id="left" class="arrow"></div>
+<div id="right" class="arrow"></div>
+<div id="voca">
+</div>
 </body>
 </html>
 {% endautoescape %}

@@ -4,6 +4,7 @@
 '''
 
 import os
+import json
 import urllib
 import hashlib
 
@@ -80,8 +81,22 @@ class VocabularyNoteHandler(webapp2.RequestHandler):
     def get(self, note_link):
         note_link = str(urllib.unquote(note_link))
 
-        voca_list = Vocabulary.query(ancestor=ndb.Key(VocabularyNote, note_link)).fetch()
-        self.response.write(voca_list)
+        raw_voca_list = Vocabulary.query(ancestor=ndb.Key(VocabularyNote, note_link)).fetch()
+
+        voca_list = []
+        for voca in raw_voca_list:
+            voca_list.append({
+                'eng': voca.eng,
+                'kor': voca.kor,
+                'again': voca.again
+            })
+
+        page_value = {
+                'voca_list': json.dumps(voca_list)
+        }
+
+        page = JINJA_ENVIRONMENT.get_template('pages/note.html')
+        self.response.out.write(page.render(page_value))
 
 application = webapp2.WSGIApplication([
     ('/', MainHandler),
