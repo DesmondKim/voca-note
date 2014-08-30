@@ -76,8 +76,16 @@ class VocabularyUploadHandler(webapp2.RequestHandler):
 
         self.redirect('/')
 
+class VocabularyNoteHandler(webapp2.RequestHandler):
+    def get(self, note_link):
+        note_link = str(urllib.unquote(note_link))
+
+        voca_list = Vocabulary.query(ancestor=ndb.Key(VocabularyNote, note_link)).fetch()
+        self.response.write(voca_list)
+
 application = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/upload', VocabularyUploadHandler),
+    ('/note/([^/]+)?', VocabularyNoteHandler),
 ], debug=True)
 
