@@ -53,24 +53,28 @@ var DISPLAY_VOCABULARY = function(is_toggle) {
 };
 
 $(document).ready(function() {
-	$('#left').click(function() {
-		--CURRENT_INDEX;
 
-		if(0 > CURRENT_INDEX)
+	$(document).click(function(e) {
+
+		window_width = $(window).width();
+		pos = parseInt(e.pageX * 100 / window_width);
+		console.log(pos);
+
+		if(pos < 30) {
+			--CURRENT_INDEX;
+
+			if(0 > CURRENT_INDEX)
 			CURRENT_INDEX = 0;
 
-		DISPLAY_VOCABULARY();
-	});
+			DISPLAY_VOCABULARY();
+		} else if(70 < pos) {
+			++CURRENT_INDEX;
 
-	$('#right').click(function() {
+			if(SIZE <= CURRENT_INDEX)
+				CURRENT_INDEX = 0;
 
-		++CURRENT_INDEX;
-
-		if(SIZE <= CURRENT_INDEX)
-			CURRENT_INDEX = 0;
-
-		DISPLAY_VOCABULARY();
-
+			DISPLAY_VOCABULARY();
+		}
 	});
 
 	$('#voca').click(function() {
