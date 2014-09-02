@@ -10,7 +10,10 @@
 <div>shuffle</div>
 <div>
 	{% for i in note_list %}
-	<a href="/note/{{i.link}}">{{i.name}}</a>
+	<h2>
+		<a href="/note/eng/{{i.link}}">{{i.name}} (ENG)</a>
+		<a href="/note/kor/{{i.link}}">{{i.name}} (KOR)</a>
+	</h2>
 	{% endfor %}
 </body>
 </html>

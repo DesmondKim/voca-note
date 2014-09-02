@@ -78,7 +78,7 @@ class VocabularyUploadHandler(webapp2.RequestHandler):
         self.redirect('/')
 
 class VocabularyNoteHandler(webapp2.RequestHandler):
-    def get(self, note_link):
+    def get(self, first_lang, note_link):
         note_link = str(urllib.unquote(note_link))
 
         raw_voca_list = Vocabulary.query(ancestor=ndb.Key(VocabularyNote, note_link)).fetch()
@@ -91,8 +91,13 @@ class VocabularyNoteHandler(webapp2.RequestHandler):
                 'again': voca.again
             })
 
+        lang_list = ['eng', 'kor']
+        if 'kor' == first_lang:
+            lang_list.reverse()
+
         page_value = {
-                'voca_list': json.dumps(voca_list)
+                'voca_list': json.dumps(voca_list),
+                'lang_list': json.dumps(lang_list)
         }
 
         page = JINJA_ENVIRONMENT.get_template('pages/note.html')
@@ -101,6 +106,6 @@ class VocabularyNoteHandler(webapp2.RequestHandler):
 application = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/upload', VocabularyUploadHandler),
-    ('/note/([^/]+)?', VocabularyNoteHandler),
+    ('/note/([^/]+)?/([^/]+)?', VocabularyNoteHandler),
 ], debug=True)
 
