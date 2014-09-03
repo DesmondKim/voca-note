@@ -65,13 +65,12 @@ $(document).ready(function() {
 
 		window_width = $(window).width();
 		pos = parseInt(e.pageX * 100 / window_width);
-		console.log(pos);
 
 		if(pos < 30) {
 			--CURRENT_INDEX;
 
 			if(0 > CURRENT_INDEX)
-				CURRENT_INDEX = 0;
+				CURRENT_INDEX = SIZE - 1;
 
 			DISPLAY_VOCABULARY();
 		} else if(70 < pos) {
