@@ -12,6 +12,10 @@
 	border-bottom: 160px solid transparent;
 }
 
+.invisible {
+	display: none;
+}
+
 #left {
 	border-right: 60px solid green;
 	float: left;
@@ -44,11 +48,15 @@ var FIRST_LANGUAGE = LANGUAGE_LIST[0];
 var CURRENT_INDEX = 0;
 var SIZE = VOCABULARY_LIST.length;
 
-var DISPLAY_VOCABULARY = function(is_toggle) {
-	var lang = FIRST_LANGUAGE;
-	if(is_toggle)
-		lang = LANGUAGE_LIST[1];
-	$('#voca').text(VOCABULARY_LIST[CURRENT_INDEX][lang]);
+var DISPLAY_VOCABULARY = function() {
+	$('#voca').empty();
+
+	voca_list = []
+	for(var i = 0; i < LANGUAGE_LIST.length; ++i)
+		voca_list.push($('<div>' + VOCABULARY_LIST[CURRENT_INDEX][LANGUAGE_LIST[i]] + '</div>'));
+	voca_list[voca_list.length - 1].addClass('invisible');
+
+	$('#voca').append(voca_list);
 };
 
 $(document).ready(function() {
@@ -63,7 +71,7 @@ $(document).ready(function() {
 			--CURRENT_INDEX;
 
 			if(0 > CURRENT_INDEX)
-			CURRENT_INDEX = 0;
+				CURRENT_INDEX = 0;
 
 			DISPLAY_VOCABULARY();
 		} else if(70 < pos) {
@@ -77,7 +85,7 @@ $(document).ready(function() {
 	});
 
 	$('#voca').click(function() {
-		DISPLAY_VOCABULARY(true);
+		$('#voca').children().toggleClass('invisible');
 	});
 
 	DISPLAY_VOCABULARY();
@@ -88,8 +96,7 @@ $(document).ready(function() {
 <body>
 <div id="left" class="arrow"></div>
 <div id="right" class="arrow"></div>
-<div id="voca">
-</div>
+<div id="voca"></div>
 </body>
 </html>
 {% endautoescape %}
